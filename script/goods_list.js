@@ -1,5 +1,13 @@
 var goodsListSection = document.getElementById('goods-list-section'); // добавил косяк с первого урока
 var buttonBasket = document.getElementById('basket-btn');
+var blockForGood = document.querySelector('.goods-list');
+
+const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+// const goods = [
+//     {title: 'Мячи', price: 1000, src: 'image/products_photo/мячи.jpg'},
+//     {title: 'Футболки', price: 1500, src: 'image/products_photo/футболки.jpg'},
+//     {title: 'Шорты', price: 700, src: 'image/products_photo/шорты.jpg'},
+// ];
 
 //Класс для товара
 class GoodsItem {
@@ -10,13 +18,8 @@ class GoodsItem {
     }
 
     render() {
-        return `<div class="goods-list__product-box">
-        <span class="goods-list__product-box__name">${this.title}</span>
-        <div class="goods-list__product-box__price">${this.price}</div>
-        <img class="goods-list__product-box__img" src=${this.src} height="100px" alt="">
-        <input type="submit" value="X" class="goods-list-item__product-box__delete"
-         onclick="deleteProductStringBasket()">
-        </div>`
+        return `<div
+    class="goodsitem"><h3>${this.title}</h3><p>${this.price}</p><p>${this.src}</p></div>`;
     }
 }
 
@@ -25,12 +28,24 @@ class GoodsList {
     constructor() {
         this.goods = [];
     }
-    fillGoods() {
-        this.goods = [
-            {title: 'Мячи', price: 1000, src: 'image/products_photo/мячи.jpg'},
-            {title: 'Футболки', price: 1500, src: 'image/products_photo/футболки.jpg'},
-            {title: 'Шорты', price: 700, src: 'image/products_photo/шорты.jpg'}
-        ];
+
+    fetchGoods() {
+        makeGetRequest(`${API_URL}/catalogData.json`)
+            .then((goods) => {
+                this.goods = JSON.parse(goods);
+                console.log(`${goods}`)
+            })
+            .then(() => {
+                this.render()
+            })
+    }
+    render() {
+        let listHtml = '';
+        this.goods.forEach(good => {
+            const goodItem = new GoodsItem(good.title, good.price, good.src);
+            listHtml += goodItem.render();
+        });
+        blockForGood.innerHTML = listHtml;
     }
 }
 
@@ -70,7 +85,7 @@ var renderBasket = () => {
     const list = new GoodsList();
     const basket = new Basket();
 
-    list.fillGoods();
+    list.fetchGoods();
     basket.addBasketItem(list.goods[0]);
     basket.addBasketItem(list.goods[1]);
     basket.addBasketItem(list.goods[2]);
@@ -84,3 +99,42 @@ window.addEventListener('click', function (evt) {
     console.log(evt)
 });
 
+function makeGetRequest(url) {
+    return new Promise ((resolve, reject) => {
+        let xhr;
+        let fakeError = Math.round(Math.random() * 100);
+        console.log(fakeError);
+
+        if ( 20 < fakeError && fakeError <= 40) {
+            url += 'n/a_file_at_server';
+        }
+        if (fakeError <= 20) {
+            setTimeout(() => {
+                reject('Время ожидание истекло')
+            }, 3000);
+        }
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+        }
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                xhr.status === 404 ? reject (`404 - файл не найден `) :
+                    resolve(xhr.responseText);
+            }
+        }
+        xhr.open('GET', url, true);
+        if (fakeError > 20) {
+            xhr.send();
+        }
+    })
+}
+const div = document.getElementById('body');
+
+makeGetRequest(`${API_URL}/catalogData.json`)
+    .then((response) => {
+        div.innerText += response;
+    })
+    .catch((error) => {
+        div.innerText = error;
+    });
