@@ -1,51 +1,57 @@
 var goodsListSection = document.getElementById('goods-list-section'); // добавил косяк с первого урока
 var buttonBasket = document.getElementById('basket-btn');
-var blockForGood = document.querySelector('.goods-list');
+
 
 const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
-// const goods = [
-//     {title: 'Мячи', price: 1000, src: 'image/products_photo/мячи.jpg'},
-//     {title: 'Футболки', price: 1500, src: 'image/products_photo/футболки.jpg'},
-//     {title: 'Шорты', price: 700, src: 'image/products_photo/шорты.jpg'},
-// ];
-
+const goods = [
+            {title: 'Мячи', price: 1000, src: 'image/products_photo/мячи.jpg'},
+            {title: 'Футболки', price: 1500, src: 'image/products_photo/футболки.jpg'},
+            {title: 'Шорты', price: 700, src: 'image/products_photo/шорты.jpg'},
+        ];
 //Класс для товара
 class GoodsItem {
-    constructor(title, price, src) {
+    constructor(title, price) {
         this.title = title;
         this.price = price;
-        this.src = src;
     }
-
     render() {
-        return `<div
-    class="goodsitem"><h3>${this.title}</h3><p>${this.price}</p><p>${this.src}</p></div>`;
+        return `<div class="goods-item"><h3>${this.title}</h3><p>${this.price}</p></div>`;
     }
 }
-
 //Класс списка товара
 class GoodsList {
     constructor() {
-        this.goods = [];
+      this.goods = [];
+      this.filteredGoods = [];
+    }
+    // async fetchGoods() {
+    //     return await fetch(`${API_URL}/catalogData.json`).then(resp => resp.json());
+    // }
+    filterGoods(value) {
+    // Здесь будем фильтровать список товаров
+        const regexp = new RegExp(value, 'i');
+        this.filteredGoods = this.goods.filter(good =>
+        regexp.test(good.product_name));
+        this.render();
     }
 
-    fetchGoods() {
-        makeGetRequest(`${API_URL}/catalogData.json`)
-            .then((goods) => {
-                this.goods = JSON.parse(goods);
-                console.log(`${goods}`)
-            })
-            .then(() => {
-                this.render()
-            })
+    fetchGoods(cb) {
+        return makeGETRequest(`${API_URL}/catalogData.json`, (goods) => {
+        this.goods = JSON.parse(goods);
+        this.filteredGoods = JSON.parse(goods);
+        cb();
+        })
     }
     render() {
-        let listHtml = '';
-        this.goods.forEach(good => {
-            const goodItem = new GoodsItem(good.title, good.price, good.src);
-            listHtml += goodItem.render();
+        const listHtml = document.querySelector('.goods-list');
+        filteredGoods.forEach(good => {
+          const goodItem = new GoodsItem(good);
+          listHtml.insertAdjacentHTML('afterEnd', goodItem.render());
         });
-        blockForGood.innerHTML = listHtml;
+        searchButton.addEventListener('click', (e) => {
+            const value = searchInput.value;
+            list.filterGoods(value);
+        });
     }
 }
 
@@ -99,42 +105,22 @@ window.addEventListener('click', function (evt) {
     console.log(evt)
 });
 
-function makeGetRequest(url) {
-    return new Promise ((resolve, reject) => {
+const makeGETRequest = (url) => {
+    return new Promise((resolve) => {
         let xhr;
-        let fakeError = Math.round(Math.random() * 100);
-        console.log(fakeError);
-
-        if ( 20 < fakeError && fakeError <= 40) {
-            url += 'n/a_file_at_server';
-        }
-        if (fakeError <= 20) {
-            setTimeout(() => {
-                reject('Время ожидание истекло')
-            }, 3000);
-        }
         if (window.XMLHttpRequest) {
             xhr = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            xhr = new ActiveXObject("Microsoft.XMLHTTP");
         }
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                xhr.status === 404 ? reject (`404 - файл не найден `) :
-                    resolve(xhr.responseText);
+                resolve(JSON.parse(xhr.response));
             }
         }
-        xhr.open('GET', url, true);
-        if (fakeError > 20) {
-            xhr.send();
-        }
-    })
-}
-const div = document.getElementById('body');
 
-makeGetRequest(`${API_URL}/catalogData.json`)
-    .then((response) => {
-        div.innerText += response;
-    })
-    .catch((error) => {
-        div.innerText = error;
+        xhr.open('GET', url, true);
+        xhr.send();
     });
+}

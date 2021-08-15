@@ -7,7 +7,12 @@
 </head>
 <body>
 <main>
-    <button class="cart-button" type="button" onclick="makeGetRequest()" >Корзина</button>
+    <header>
+        <input type="text" class="goods-search" />
+        <button class="search-button" type="button">Искать</button>
+        <button class="cart-button button" type="button" id="basket-btn">Корзина</button>
+        </header>
+
 
     <section class="product-card-section">
         <a class="product-card-section__box" href="#" target="blanck">
@@ -45,4 +50,44 @@
 
     <script src="script/goods_list.js" defer></script>
 </body>
+
+<body>
+    <body>
+        <div class="form-box" >
+            <h1 style="text-align: center"> Форма обратной связи </h1>
+            <form name="regform" onsubmit="return formValidation(event)">
+            <h2 id="form-box__area__headline"></h2>
+                <p >Имя:
+                    <input type="text" size=65 name="name" class="form-box__area"></p><br>
+                    <span class="error-text form-box__area"></span>
+                <p>E-mail:
+                    <input type="text" size=65 name="email" class="form-box__area"> </p><br>
+                    <span class="error-text form-box__area"></span>
+                <p>Телефон:
+                    <input type="text" size=65 name="telephone" onclick="this.value=''" value="+7(000)000-0000" class="form-box__area"> </p><br>
+                    <span class="error-text form-box__area"></span>
+                <p> Комментарий:
+                    <textarea cols="55" name="comment" class="form-box__area"> </textarea></p>
+                <p>
+                    <input type="submit" value="Отправить" name="submitButton">
+                </p>
+            </form>
+        </div>
+<!--        <button id="next-ex" onclick="openNextEx()">ДЗ с тексто></button>-->
+<!--        <br>-->
+<!--        <div class="box-next-ex">-->
+<!--            <span id="text-box__before-text">-->
+<!--                'Одинарные ковычки нужно заменить на двойные'-->
+<!--                кроме don't isn't doesn't didn't-->
+<!--            </span>-->
+<!--            <br>-->
+<!--            <button id="btn-change-text" onclick="changeText()"> Изменить ' на " </button>-->
+<!--            <br>-->
+<!--            <span id="text-box__after-text"></span>-->
+<!--        </div>-->
+<!--    <script src="script/scriptsDZ4.js"></script>-->
+    </body>
+    <script src="script/script_lesson4.js"></script>
+</body>
+    <script src="script/goods_list.js"></script>
 </html>
