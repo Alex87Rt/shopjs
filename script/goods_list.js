@@ -198,6 +198,27 @@ let app = new Vue({
                     console.log(error)
                 })
         },
+        makePOSTRequest(url, data, callback) {
+            let xhr;
+
+            if (window.XMLHttpRequest) {
+                xhr = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    callback(xhr.responseText);
+                }
+            }
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+            xhr.send(data);
+        },
+
         addProduct(product) {
             console.log(product.id_product);
         },
@@ -214,14 +235,13 @@ let app = new Vue({
         }
     },
     mounted() {
-        this.getJson(`${API_URL + this.catalogUrl}`)
-            .then(data => {
-                for (let el of data) {
-                    this.products.push(el)
-                }
-            });
-        this.filteredProducts = this.products;
+        this.makeGETRequest(`/catalogData`, (goods) => {
+            this.goods = JSON.parse(goods);
+            this.filteredGoods = JSON.parse(goods);
+        });
     }
+
+
 });
 
 class List {
@@ -309,7 +329,8 @@ class ProductsList extends List {
 }
 
 
-class ProductItem extends Item {}
+class ProductItem extends Item {
+}
 
 class Cart extends List {
     constructor(url = 'getBasket.json', container = '.basket') {

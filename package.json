@@ -1,0 +1,24 @@
+{
+  "name": "shops_gb",
+  "version": "1.0.0",
+  "description": "\"магазин\"",
+  "main": "index.js",
+  "dependencies": {
+    "moment": "^2.29.1",
+    "node-static": "^0.7.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alex87Rt/shopjs.git"
+  },
+  "author": "Alex",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alex87Rt/shopjs/issues"
+  },
+  "homepage": "https://github.com/Alex87Rt/shopjs#readme"
+}
