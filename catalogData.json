@@ -1,0 +1,17 @@
+[
+  {
+    "id_product": 111,
+    "product_name": "Мячи",
+    "price": 1000
+  },
+  {
+    "id_product": 222,
+    "product_name": "Футболки",
+    "price": 1500
+  },
+  {
+    "id_product": 333,
+    "product_name": "Шорты",
+    "price": 700
+  }
+]
